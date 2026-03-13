@@ -1,0 +1,42 @@
+# 核心系统接口定义概要 (伪代码规范)
+
+class AlignedMmapBuffer:
+    """基于 mmap 和 4KB 内存对齐的缓冲池管理器"""
+    def __init__(self, file_path: str, pool_size: int = 64 * 1024 * 1024):
+        self.page_size = 4096 # OS Page Cache 边界
+        # 初始化 mmap 映射...
+
+    def sequential_bulk_flush(self, data_block: bytes) -> None:
+        """强制对齐 4KB 边界的连续批量刷盘"""
+        pass
+
+class PingPongDoubleBuffer:
+    """规避 GIL 的双缓冲预读器"""
+    def __init__(self, buffer_size: int = 32 * 1024 * 1024):
+        self.buffer_a = bytearray(buffer_size)
+        self.buffer_b = bytearray(buffer_size)
+        self.active_buffer_ptr = self.buffer_a
+        self.bg_thread = threading.Thread(target=self._async_prefetch_io, daemon=True)
+        
+    def _async_prefetch_io(self):
+        """后台线程：阻塞式I/O，触发 GIL 释放，预加载数据到非活动Buffer"""
+        pass
+
+    def swap_buffers_atomic(self) -> None:
+        """原子级切换活动缓冲区块指针"""
+        pass
+
+class LazyGeneratorKWayMerge:
+    """基于有限状态机的惰性 O(1) 多路归并调度器"""
+    def __init__(self, chunk_files: List[str]):
+        self.heap =[] # 维持固定的120个元素
+        
+    def _file_line_yield_generator(self, fd) -> Generator[str, None, None]:
+        """按需唤醒的挂起/恢复状态机"""
+        while True:
+            # 依赖 mmap 和 double buffer 获取下一行
+            yield next_line 
+
+    def execute_merge(self, out_file: str) -> None:
+        """执行归并，峰值内存受控于 50MB SLA以内"""
+        pass
