@@ -137,7 +137,5 @@ class ExternalSortEngine:
                 shutil.rmtree(self.temp_dir)
 
 if __name__ == "__main__":
-    # 使用示例
-    # 假设有一个 120GB 的 huge.log
     engine = ExternalSortEngine("huge.log", "sorted.log")
     engine.run()
